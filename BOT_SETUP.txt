@@ -1,0 +1,69 @@
+BOT REPAIR NOTES
+========================
+
+What this revision fixes
+------------------------
+1. /song allocates exactly ONE account session to a team code.
+   - Sessions already in a team are skipped.
+   - The next distinct /song request rotates to the next available idle session.
+   - A failed/uncertain join does not trigger a parallel join from other accounts.
+   - Repeating /song with the same confirmed team code does not add another account.
+
+2. Music playback stability improvements.
+   - Music is encoded with FFmpeg's Opus audio application at 48 kHz mono, using the
+     bitrate negotiated by the voice server, a 20 ms frame duration, and peak limiting.
+   - UDP frame sends use the event loop's asynchronous socket-send path when available;
+     late scheduling is re-based instead of sending a burst of overdue frames.
+   - Repetitive voice-TCP hex logging is sampled to reduce console I/O during playback.
+   - Ogg/Opus packet parsing reconstructs packets across Ogg lacing/page boundaries.
+   - The existing in-game /play and !play search/download/playback flow remains in place.
+
+3. Stop and developer commands.
+   - In-game squad-chat /stop and !stop stop playback and leave the current squad.
+   - Telegram has no /stop command; the bot's Telegram commands are /start, /help,
+     /song TEAM_CODE, and /dev for everyone in the allowed group.
+   - /dev lists @qk_7x and @meropvp.
+   - /start and /help show the compact public command guide.
+
+Telegram access
+---------------
+Allowed group: https://t.me/loginbplike
+Developer Telegram ID: 8401495212
+Ordinary Telegram group commands: /start, /help, /song TEAM_CODE, and /dev.
+Use /stop in the Free Fire squad chat (not in Telegram) to stop music and leave the squad.
+Developer-only controls appear only in the developer's private chat.
+
+Preserve your existing private configuration
+---------------------------------------------
+This repair archive intentionally does NOT contain config.json or accs.txt.
+That is deliberate: your local copies may contain your current Telegram bot token,
+video file IDs, and the full account list. Extract this archive OVER your existing
+project directory so those two files remain untouched.
+
+The source continues to load game credentials ONLY from accs.txt, one account per
+line, in UID:PASSWORD format. Do not rename or replace your existing accs.txt.
+
+Music dependencies
+------------------
+In Termux, install ffmpeg and yt-dlp in the same Python environment used to run main.py:
+  pkg install ffmpeg
+  python -m pip install -U yt-dlp aiohttp requests protobuf pycryptodome
+
+The code uses ffmpeg's libopus encoder when available; otherwise it uses the
+optional opusenc executable. Keep the existing opus directory if you use Windows.
+The audio improvements reduce sender-side packet drops and timing bursts, but cannot
+remove interruptions caused by mobile internet, Wi-Fi loss, or the game's voice server.
+
+Important
+---------
+Validation performed for this revision:
+- all Python files compile;
+- FFmpeg generated a three-second 48 kHz mono Opus test and the parser recovered
+  151 complete 20 ms audio packets;
+- Ogg lacing continuation across page boundaries was tested;
+- the UDP sender was exercised against a localhost receiver and packet timing was
+  approximately 20 ms per frame;
+- stop/leave task cleanup and Telegram command-routing checks passed locally.
+A live Free Fire/Telegram network test was not possible in this environment.
+The log you provided contains account identifiers and a temporary voice-session token;
+avoid posting unredacted logs publicly.

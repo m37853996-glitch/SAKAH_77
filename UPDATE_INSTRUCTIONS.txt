@@ -1,0 +1,29 @@
+UPDATE INSTRUCTIONS
+===============================
+
+IMPORTANT: extract this ZIP into your existing project folder and
+allow source files to be overwritten.
+
+This archive intentionally omits these two per-installation files:
+  - accs.txt      (your existing account list)
+  - config.json   (your Telegram token, group/developer settings and video IDs)
+
+Because they are omitted, your existing copies stay untouched when you extract
+this update over the same folder. Do not delete or rename either file.
+
+After extracting, open Termux in the existing folder and run:
+  python main.py
+
+This update improves YouTube search latency with flat result extraction and a
+five-minute per-process search cache, speeds fragmented downloads when the
+source supports concurrent fragments, and reduces Opus encoder complexity to
+shorten preparation time. It also improves UDP send-buffer handling and avoids
+an asynchronous selector operation for every outgoing 20 ms audio packet.
+
+The negotiated voice bitrate, 48 kHz mono Opus format, 20 ms frame duration,
+voice packet header, looping behavior, in-game squad-chat /stop command, and
+Telegram command/UI behavior are unchanged. The game account list remains
+loaded only from accs.txt. It does not read accs.json or eu_accs.json.
+
+For a brand-new installation only, copy accs.txt.example to accs.txt and
+config.example.json to config.json, then fill in your account lines and NEW bot token.

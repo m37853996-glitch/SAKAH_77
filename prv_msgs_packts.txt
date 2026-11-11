@@ -1,0 +1,80 @@
+Send msg to the target :
+{
+    "1": 1,
+    "2": {
+        "1": 16647556745, // bot uid
+        "2": 2704127879, // target
+        "3": 2,
+        "4": "bye", // msg contetn
+        "5": 1785429466, // timestamp
+        "7": 6,
+        "9": {
+            "1": "HellX_050", // bot name
+            "2": RANDOM_AVATAR // random avatar 
+            "4": 330, // bot rank
+	    "5": 910050002, // bot badge id	
+            "13": {},
+            "14": {
+                "1": 16647556745, // bot uid
+                "3": {}
+            },
+            "18": {
+                "1": 16647556745, // bot uid
+                "3": 1,
+                "4": {}
+            }
+        },
+        "10": "tr", // lang
+        "13": {
+            "2": 1,
+            "3": 1
+        },
+        "14": {}
+    }
+}
+---
+Received msg , remove the headers must , recv example :
+{
+    "1": 16647556745, // bot id
+    "2": 18,
+    "4": 2,
+    "5": {
+        "1": 2704127879, // sender id
+        "2": 16647556745, // bot id
+        "3": 2,
+        "4": "Im here", // msg content
+        "5": 1785429452, // timestamp
+        "7": 6,
+        "9": {
+            "1": "isywdie", // sender name
+            "2": 902000005, // sender avatar , doesnt matter
+            "3": 901027004, // sender banner , dosent matter
+            "4": 309, // sender rank , dosent matter
+            "5": 910000013, // sender badge id dosent matter
+            "13": {},
+            "14": {
+                "1": 2704127879,
+                "2": 4,
+                "3": {
+                    "1": 1229214499224553500
+                }
+            },
+            "18": {
+                "1": 2704127879,
+                "3": 1,
+                "4": {}
+            }
+        },
+        "10": "vn", // lang
+        "13": {
+            "1": "https://lh3.googleusercontent.com/a/ACg8ocIw6VTwQoSrU7_ns8SS4-RKSmkb2XOJYG3aBf1-P5HWZyhQTGc=s96-c",
+            "2": 1,
+            "3": 1
+        },
+        "14": {},
+        "16": 2082868203864819700
+    }
+}
+
+
+

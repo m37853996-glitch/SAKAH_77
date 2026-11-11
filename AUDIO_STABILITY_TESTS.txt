@@ -1,0 +1,53 @@
+MEDIA / PERFORMANCE VALIDATION
+===================================
+
+YouTube search and download improvements
+-----------------------------------------
+- Search uses yt-dlp flat-playlist extraction so it fetches only the metadata
+  required to identify the first matching video.
+- Search timeout is bounded to 12 seconds for the first attempt and 9 seconds
+  for the fallback query.
+- A successful normalized query is cached for five minutes (up to 64 entries)
+  per account process, preventing repeated YouTube lookups for the same song.
+- The fallback query is attempted only when the first query yields no usable
+  result or fails; the normal successful path runs one search request.
+- Download mode requests four concurrent DASH/HLS fragments and a larger HTTP
+  chunk size when supported by the selected source.
+- Opus encoding complexity is reduced from 10 to 5 to shorten the time before
+  playback while keeping the negotiated bitrate, mono channel, 48 kHz sample
+  rate, audio application, and 20 ms packet duration unchanged.
+
+Voice UDP stability improvements
+--------------------------------
+- UDP send and receive buffers are increased on a best-effort basis; mobile
+  kernels may clamp the requested values.
+- Small voice packets use a direct non-blocking send to avoid creating an
+  asynchronous selector operation for every 20 ms frame.
+- If the kernel send buffer is temporarily full, the sender yields to the event
+  loop and retries through the asynchronous socket API instead of immediately
+  dropping the frame.
+- Existing packet header, sequence/timestamp progression, 20 ms pacing,
+  looping behavior, negotiated voice bitrate, and in-game stop behavior remain
+  unchanged.
+
+Local validation performed for this revision
+---------------------------------------------
+- Python syntax compilation for every project .py file: PASS.
+- Mocked YouTube search: flat extraction arguments and URL normalization: PASS.
+- Repeated identical search: five-minute cache avoids a second lookup: PASS.
+- Generated a 2-second 48 kHz mono Opus test stream with 20 ms packets: PASS.
+- Ogg parser returned 101 complete Opus packets from the generated test stream: PASS.
+- Sent packets to a localhost UDP receiver: PASS; observed median spacing
+  approximately 20.24 ms and maximum observed gap approximately 20.63 ms in
+  the short local test run.
+- ZIP integrity check: PASS.
+
+Limit
+-----
+These checks validate local search logic using a mocked yt-dlp result, local
+FFmpeg/Opus encoding, Ogg parsing, and localhost packet pacing. The environment
+for this revision did not have yt-dlp installed and could not test YouTube
+network extraction or the live Free Fire voice relay. Internet packet loss,
+Android background scheduling, weak Wi-Fi/mobile coverage, and the game's own
+voice server can still cause interruptions; no client-side change can guarantee
+zero dropouts under those conditions.
